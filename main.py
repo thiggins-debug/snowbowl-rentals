@@ -33,20 +33,67 @@ def view_equipment():
         print("Available quantity:", item["available"])
 
 
+# Keeps asking until the user enters a positive whole number.
+def get_quantity():
+    while True:
+        try:
+            quantity = int(input("Number of sets to add: "))
+            if quantity > 0:
+                return quantity
+            else:
+                print("Enter a whole number greater than zero.")
+        except ValueError:
+            print("Please enter a whole number, like 5.")
+
+
+# Restocks an existing type or adds a new type with its price and quantity.
+def add_equipment():
+    name = input("Equipment name: ").strip().lower().replace(" ", "_")
+    while name == "":
+        print("The name cannot be blank.")
+        name = input("Equipment name: ").strip().lower().replace(" ", "_")
+
+    if name in equipment:
+        quantity = get_quantity()
+        equipment[name]["total"] += quantity
+        equipment[name]["available"] += quantity
+        print("Equipment quantity updated.")
+    else:
+        while True:
+            try:
+                price = float(input("Daily rental price: $"))
+                if 0 < price < float("inf"):
+                    break
+                else:
+                    print("Enter a positive, finite price.")
+            except ValueError:
+                print("Please enter a number, like 40.00.")
+
+        quantity = get_quantity()
+        equipment[name] = {
+            "price": price,
+            "total": quantity,
+            "available": quantity
+        }
+        print("New equipment added.")
+
+
 # Repeats the menu until the user chooses Save and exit.
 def main():
     while True:
         show_menu()
         choice = input("Choose an option (1-7): ").strip()
 
-        if choice == "7":
+        if choice == "1":
+            view_equipment()
+        elif choice == "2":
+            add_equipment()
+        elif choice in ["3", "4", "5", "6"]:
+            print("Coming soon")
+        elif choice == "7":
             print("CSV saving comes next week. Changes will not be saved yet.")
             print("Goodbye!")
             break
-        elif choice == "1":
-            view_equipment()
-        elif choice in ["2", "3", "4", "5", "6"]:
-            print("Coming soon")
         else:
             print("Invalid option. Please choose a number from 1 to 7.")
 
